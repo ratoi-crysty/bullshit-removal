@@ -60,10 +60,6 @@ npx nx build @bullshit-removal/extension
 
 This type-checks (`tsc -b`), then writes a self-contained build to `apps/extension/dist`, which you can load unpacked the same way, and packs it as `apps/extension/release/crx-bullshit-removal-extension-<version>.zip` for distribution.
 
-### Known issues
-
-- The manifest's `name` comes from the package name, so Chrome shows the extension as `@bullshit-removal/extension`.
-
 ## Nx workspace
 
 <a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
