@@ -58,12 +58,10 @@ The development build loads its code from the dev server, so it stops working wh
 npx nx build @bullshit-removal/extension
 ```
 
-This type-checks (`tsc -b`), then writes a self-contained build to `apps/extension/dist`, which you can load unpacked the same way. It is also meant to pack a zip into `apps/extension/release/` for distribution.
+This type-checks (`tsc -b`), then writes a self-contained build to `apps/extension/dist`, which you can load unpacked the same way, and packs it as `apps/extension/release/crx-bullshit-removal-extension-<version>.zip` for distribution.
 
 ### Known issues
 
-- `nx build` currently fails at the type-check step: `src/sidepanel/main.tsx` imports `./App.tsx`, which TypeScript rejects without `allowImportingTsExtensions`. Until it is fixed, `npx vite build` (run in `apps/extension`) produces a loadable `dist` without type-checking.
-- Packing the release zip fails: the zip filename is built from the scoped package name (`crx-@bullshit-removal/extension-1.0.0.zip`), and the `/` in it points into a directory that does not exist.
 - The manifest's `name` comes from the package name, so Chrome shows the extension as `@bullshit-removal/extension`.
 
 ## Nx workspace

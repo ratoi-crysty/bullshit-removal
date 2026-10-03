@@ -6,6 +6,9 @@ import zip from 'vite-plugin-zip-pack'
 import manifest from './manifest.config.js'
 import { name, version } from './package.json'
 
+// `@bullshit-removal/extension` -> `bullshit-removal-extension`: the scope's `/` would otherwise be a path separator
+const zipName: string = name.replace(/^@/, '').replace(/\//g, '-')
+
 export default defineConfig({
   resolve: {
     alias: {
@@ -15,7 +18,7 @@ export default defineConfig({
   plugins: [
     react(),
     crx({ manifest }),
-    zip({ outDir: 'release', outFileName: `crx-${name}-${version}.zip` }),
+    zip({ outDir: 'release', outFileName: `crx-${zipName}-${version}.zip` }),
   ],
   server: {
     cors: {
