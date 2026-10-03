@@ -1,10 +1,76 @@
-# BullshitRemoval
+# Bullshit Removal
+
+A browser extension, backed by a closed-membership service, that declines consent banners and removes overlays that hide content a page has already delivered.
+
+- [`CONTEXT.md`](./CONTEXT.md): the project's vocabulary (Obstruction, Rule, Step, Draft, …)
+- [`docs/adr/`](./docs/adr/): architecture decisions
+
+## Repository layout
+
+| Project | Path | What it is |
+|---|---|---|
+| `@bullshit-removal/extension` | `apps/extension` | Chrome MV3 extension (React + Vite + CRXJS) |
+| `@bullshit-removal/api` | `apps/api` | NestJS API |
+| `@bullshit-removal/web` | `apps/web` | Admin panel (React + Vite) |
+| `@bullshit-removal/api-interfaces` | `libs/api-interfaces` | Shared types, including the Rule protocol |
+
+## Extension
+
+### Current status
+
+The extension is still the CRXJS starter: it does not apply any Rules yet. Once loaded, it provides:
+
+- **Popup**: click the extension's toolbar icon. Shows the starter "Vite + React + CRXJS" page.
+- **Side panel**: open Chrome's side panel and select the extension. Shows the same starter page.
+- **Content script**: runs on every `https://` page, logs `[CRXJS] Hello world from content script!` to the page's console, and adds a floating button in the bottom-right corner that toggles a "HELLO CRXJS" box.
+
+Permissions requested so far: `sidePanel`, `contentSettings`.
+
+### Prerequisites
+
+- Node.js and the repo's pinned Yarn 1 (`.yarn/releases/yarn-1.22.22.cjs`, picked up automatically via `.yarnrc`)
+- Chrome, or another Chromium-based browser
+- Dependencies installed from the repo root:
+
+```sh
+yarn install
+```
+
+### Develop
+
+1. Start the dev server from the repo root:
+
+   ```sh
+   npx nx dev @bullshit-removal/extension
+   ```
+
+   CRXJS writes a development build to `apps/extension/dist` and prints `Load dist as unpacked extension`.
+
+2. In Chrome, open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked**, and select `apps/extension/dist`.
+
+3. Keep the dev server running. Changes to the popup, side panel and content script hot-reload. After changing `manifest.config.ts`, click the reload icon on the extension's card in `chrome://extensions`.
+
+The development build loads its code from the dev server, so it stops working when the dev server is stopped. Use a production build to run the extension on its own.
+
+### Production build
+
+```sh
+npx nx build @bullshit-removal/extension
+```
+
+This type-checks (`tsc -b`), then writes a self-contained build to `apps/extension/dist`, which you can load unpacked the same way. It is also meant to pack a zip into `apps/extension/release/` for distribution.
+
+### Known issues
+
+- `nx build` currently fails at the type-check step: `src/sidepanel/main.tsx` imports `./App.tsx`, which TypeScript rejects without `allowImportingTsExtensions`. Until it is fixed, `npx vite build` (run in `apps/extension`) produces a loadable `dist` without type-checking.
+- Packing the release zip fails: the zip filename is built from the scoped package name (`crx-@bullshit-removal/extension-1.0.0.zip`), and the `/` in it points into a directory that does not exist.
+- The manifest's `name` comes from the package name, so Chrome shows the extension as `@bullshit-removal/extension`.
+
+## Nx workspace
 
 <a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
-
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/node?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+This is an [Nx workspace](https://nx.dev). Run `npx nx graph` to explore the projects and their dependencies.
 
 ## Run tasks
 
